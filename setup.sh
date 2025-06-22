@@ -54,12 +54,6 @@ if [ ! -f "$IMPORT_DONE" ]; then
 
   # 標記已完成 import
   echo "✅" > "$IMPORT_DONE"
-
-  echo "🚀 Import 完成，現在用 run 模式啟動 tile-server..."
-  docker compose up -d tile-server --command "run"
-else
-  echo "🚀 Tile server 使用 run 模式啟動..."
-  docker compose up -d tile-server --command "run"
 fi
 
 
