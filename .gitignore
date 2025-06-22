@@ -1,4 +1,8 @@
 .env
 scripts/
 backend/venv/
-osm_data/osrm_files/
+venv/
+
+# 忽略 osrm_files 裡所有檔案，但保留 .gitkeep
+osm_data/osrm_files/*
+!osm_data/osrm_files/.gitkeep
