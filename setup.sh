@@ -43,11 +43,14 @@ if [ ! -f "$OSRM_DATA" ]; then
   mv "${OSRM_DIR}/taiwan.pbf" "$PBF_FILE"
 fi
 
+# ============ tile server Import/Run ============
 if [ ! -f "$IMPORT_DONE" ]; then
   echo "🗺️ Tile server 首次 import..."
 
-  # 用 run 模式等待 import 完成（不在背景）
-  docker compose run --rm tile-server import
+  docker run --rm \
+    -v osm-tile-data:/data/database \
+    -v $PWD/osm_data/taiwan.pbf:/data/region.osm.pbf:ro \
+    overv/openstreetmap-tile-server import
 
   # 標記已完成 import
   echo "✅" > "$IMPORT_DONE"
@@ -63,9 +66,3 @@ fi
 # ============ 啟動其他服務 ============
 echo "🧱 啟動其他 docker-compose 服務..."
 docker compose up -d --build --scale django=3
-
-# ============ 套用資料庫遷移 ============
-echo "🛠️ 套用 Django 資料庫 migrate..."
-docker compose exec django python manage.py migrate
-
-echo "✅ 導航系統建置完成！ 現在用vscode live server 右鍵frontend/index.html開啟地圖 🎉"
