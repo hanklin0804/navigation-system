@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>地圖路徑規劃介面</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="map"></div>
+
+  <div id="route-info">
+    <h3>輸入資料</h3>
+    <label>使用者名稱：<input type="text" id="username-input" placeholder="例如：小明" /></label><br><br>
+    <label>目前位置：<input type="text" id="user-location-input" placeholder="可輸入或點擊地圖選點" /></label><br><br>
+    <button onclick="confirmUserLocation()">確認位置</button>
+    <hr>
+    <h3>附近使用者</h3>
+    <label>查詢半徑（公里）：<input type="number" id="radius-input" value="2" min="0.1" step="0.1" /></label><br><br>
+    <button onclick="fetchNearbyUsers()">查詢附近使用者</button>
+    <ul id="nearby-users-list"></ul>
+    <hr>
+    <h3>規劃路線</h3>
+    <label>起點：<input type="text" id="start-input" placeholder="如 台北101" /></label><br><br>
+    <label>終點：<input type="text" id="end-input" placeholder="如 台大醫院" /></label><br><br>
+    <button onclick="handleAddressSubmit()">查詢路線</button>
+    <hr>
+    <p><strong>路線距離：</strong><span id="main-distance">--</span></p>
+    <p><strong>路線時間：</strong><span id="main-duration">--</span></p>
+  </div>
+  
+  <!-- 聊天視窗 -->
+  <div id="chat-box" style="display:none; position:fixed; bottom:10px; right:10px; width:300px; background:white; border:1px solid #ccc; padding:10px; z-index:9999;">
+    <h4 id="chat-user-title">與 ... 聊天中</h4>
+    <div id="chat-messages" style="height:150px; overflow-y:auto; border:1px solid #eee; margin-bottom:8px; padding:4px;"></div>
+    <input type="text" id="chat-input" placeholder="輸入訊息" style="width:100%;" />
+    <button onclick="sendMessage()">送出</button>
+    <button onclick="closeChat()">關閉</button>
+  </div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

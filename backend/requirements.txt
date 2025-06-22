@@ -1,0 +1,8 @@
+Django==4.2
+djangorestframework==3.14
+psycopg2-binary
+channels
+channels-redis
+django-cors-headers
+gunicorn
+daphne>=4.0

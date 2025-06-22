@@ -1,0 +1,4 @@
+.env
+scripts/
+backend/venv/
+osm_data/osrm_files/

@@ -1,0 +1,84 @@
+version: "3.9"
+services:
+  nginx-balancer:
+    image: nginx:alpine
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./frontend:/usr/share/nginx/html:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - django
+    networks:
+      - backend-net
+
+  django:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file: .env                         
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./backend:/app                    
+    networks:
+      - backend-net
+    
+  db:
+    image: postgis/postgis:15-3.3
+    container_name: postgis_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - backend-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    networks:
+      - backend-net
+    ports:
+      - "6379:6379"
+
+  osrm:
+    image: osrm/osrm-backend
+    container_name: osrm
+    depends_on:
+      - db    
+    volumes:
+      - ./osm_data/osrm_files:/data                
+    command: osrm-routed --algorithm mld /data/${OSRM_MAP}.osrm
+    ports:
+      - "5000:5000"
+    networks:
+      - backend-net
+
+  tile-server:
+    image: overv/openstreetmap-tile-server
+    container_name: tile-server
+    depends_on:
+      - db
+    volumes:
+      - osm-tile-data:/data/database    # 使用命名卷儲存地圖資料庫
+      - ./osm_data/${OSRM_MAP}.osm.pbf:/data/region.osm.pbf:ro        # （選擇性）掛載 PBF 檔供容器使用
+    command: run # 第二次之後啟動
+    # command: import #第一次跑先載入地圖
+    ports:
+      - "8080:80"
+    networks:
+      - backend-net
+
+# 定義 Docker Volume 以保存持久資料
+volumes:
+  db-data:
+  osm-tile-data:
+
+networks:
+  backend-net:
