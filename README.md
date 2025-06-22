@@ -91,22 +91,27 @@ Nginx 在系統中扮演角色：
 - ⚖️ **負載均衡器**：
   - 支援多個 Django 實例，透過 `docker compose --scale django=3` 實現後端分流。
 
-![alt text](image.png)
+## 🖼️ 系統畫面示意
+
+![系統首頁](docs/images/map-home.png)  
 系統首頁介面，顯示台灣地圖與功能控制項。
 
-![alt text](image-1.png)
+![使用者定位](docs/images/input-user-location.png)  
 輸入唯一的使用者名稱與座標（可點擊地圖、輸入地址或手動輸入經緯度），位置將顯示於地圖上。
 
-![alt text](image-2.png)
+![查詢附近使用者](docs/images/search-nearby.png)  
 輸入查詢半徑（公里），可搜尋並顯示附近其他使用者的位置。
 
-
-
-![alt text](image-3.png)
+![聊天視窗](docs/images/chat-ui.png)  
 點擊地圖上的使用者標記，可開啟對話框進行 WebSocket 即時聊天。
 
-![alt text](image-4.png)
+![導航路線](docs/images/route-planning.png)  
 輸入起點與終點，系統會在地圖上顯示導航路線、距離與預估開車時間。
 
-![alt text](image-5.png)![alt text](image-6.png)![alt text](image-7.png)
+<div style="display:flex; gap:10px;">
+  <img src="docs/images/load-balance-1.png" width="30%" />
+  <img src="docs/images/load-balance-2.png" width="30%" />
+  <img src="docs/images/load-balance-3.png" width="30%" />
+</div>
+
 以上三張圖展示對同一 API 發出三次請求，經由 Nginx 負載均衡器，分別由不同 Django container 回應處理。
