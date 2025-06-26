@@ -88,11 +88,11 @@ docker compose exec django python manage.py migrate
 
 Nginx 在系統中扮演角色：
 
-- 📦 **靜態前端資源伺服器**：提供 `index.html`、`app.js`、`style.css` 等前端檔案。
-- 🔄 **反向代理伺服器**：
+-  **靜態前端資源伺服器**：提供 `index.html`、`app.js`、`style.css` 等前端檔案。
+-  **反向代理伺服器**：
   - 將 `/api/` 請求轉發至 Django REST API。
   - 將 `/ws/` 協議升級為 WebSocket，轉發至 Django Channels。
-- ⚖️ **負載均衡器**：
+-  **負載均衡器**：
   - 支援多個 Django 實例，透過 `docker compose --scale django=3` 實現後端分流。
 
 ##  系統畫面示意
