@@ -1,5 +1,5 @@
 # chat/routing.py
-from django.urls import re_path
+from django.urls import re_path # 正規表示式路由工具
 from . import consumers
 
 websocket_urlpatterns = [
