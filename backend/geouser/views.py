@@ -33,7 +33,7 @@ class UserLocationCreateView(APIView):
                 "name": obj.name,
                 "lat": obj.location.y,
                 "lng": obj.location.x,
-                "served_by": socket.gethostname(),  # ✅ 顯示是哪個 instance 處理
+                "served_by": socket.gethostname(),  #  顯示是哪個 instance 處理
             }, status=status.HTTP_200_OK)
         
         except IntegrityError:
