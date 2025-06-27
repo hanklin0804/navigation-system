@@ -36,8 +36,8 @@
 
 ##  套件
 ---
-- Docker
-- Docker Compose
+- Docker 28.2.2
+- Docker Compose v2.27.1
 
 ---
 
