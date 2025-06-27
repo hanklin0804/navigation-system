@@ -29,17 +29,6 @@
 
 ---
 
-##  API 概覽
-
-| 功能             | Endpoint 範例 |
-|------------------|----------------|
-| 建立 / 更新位置  | `POST /api/users/` |
-| 查詢附近使用者   | `GET /api/users/nearby/?=<使用者名稱>&radius=<公里>` |
-| 傳送聊天訊息     | WebSocket `/ws/chat/<your_name>/<target_name>/` |
-| OSRM 導航規劃    | `GET /route/v1/driving/<lon1>,<lat1>;<lon2>,<lat2>?overview=full&geometries=geojson` |
-
----
-
 ##  系統
 
 - Ubuntu 24.04
@@ -95,7 +84,7 @@ Nginx 在系統中扮演角色：
 -  **負載均衡器**：
   - 支援多個 Django 實例，透過 `docker compose --scale django=3` 實現後端分流。
 
-##  系統畫面示意
+##  系統畫面
 
 ![系統首頁](docs/images/map-home.png)  
 系統首頁介面，顯示台灣地圖與功能控制項。
