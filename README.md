@@ -55,7 +55,7 @@ chmod +x setup.sh
 
  等容器完全啟動後，再執行：
 ```bash
-docker compose exec django python manage.py migrate
+docker compose exec django-1 python manage.py migrate
 ```
 
 ##  開啟方式 
