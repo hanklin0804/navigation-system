@@ -6,7 +6,7 @@ from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D # Distance，用於 GeoDjango 查詢距離
 from .models import UserLocation
 import socket  
-from django.db import transaction, IntegrityError  # 資料庫原子性處理
+from django.db import transaction, IntegrityError  
 
 # 使用者位置建立或更新
 class UserLocationCreateView(APIView):
@@ -22,11 +22,11 @@ class UserLocationCreateView(APIView):
             point = Point(float(lng), float(lat)) 
             
             # 加入原子操作，防止 race condition
-            with transaction.atomic():
-                obj, created = UserLocation.objects.update_or_create(
-                    name=name,
-                    defaults={"location": point}
-                )
+            # with transaction.atomic():
+            obj, created = UserLocation.objects.update_or_create(
+                name=name,
+                defaults={"location": point}
+            )
 
             return Response({
                 "message": "已建立" if created else "已更新",
