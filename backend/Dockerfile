@@ -3,7 +3,7 @@ FROM python:3.10-slim
 
 # 安裝 GeoDjango 相關的系統套件：GDAL、GEOS、PROJ 等
 RUN apt-get update && apt-get install -y \
-    binutils gdal-bin libproj-dev libgeos-dev \ 
+    binutils gdal-bin libproj-dev \ 
     && rm -rf /var/lib/apt/lists/*  # 安裝完成後清除快取
 
 # 設定工作目錄
