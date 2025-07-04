@@ -1,4 +1,3 @@
-version: "3.9"
 services:
   nginx:
     image: nginx:alpine
@@ -104,18 +103,17 @@ services:
     depends_on:
       - db
     volumes:
-      - osm-tile-data:/data/database    # 使用命名卷儲存地圖資料庫
-      - ./osm_data/${OSRM_MAP}.osm.pbf:/data/region.osm.pbf:ro        # （選擇性）掛載 PBF 檔供容器使用
-    command: run # 第二次之後啟動
-    # command: import #第一次跑先載入地圖
+      - osm-tile-data:/data/database    
+      - ./osm_data/${OSRM_MAP}.osm.pbf:/data/region.osm.pbf:ro        
+    command: run # 已在setup.sh import (OSM要先做import，否則run會crash)
     ports:
       - "8080:80"
     networks:
       - backend-net
 
-# 定義 Docker Volume 以保存持久資料
 volumes:
   db-data:
+  # setup.sh 已先宣告osm-tile-data
   osm-tile-data:
     external: true
 
