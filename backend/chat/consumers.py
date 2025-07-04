@@ -57,7 +57,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'message': event['message'],
         }))
 
-    # 非同步地從資料庫查詢使用者
+    # 非同步從資料庫查詢使用者
     @database_sync_to_async
     def get_user(self, name):
         return UserLocation.objects.get(name=name)
