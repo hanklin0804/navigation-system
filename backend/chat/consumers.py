@@ -4,8 +4,6 @@ from geouser.models import UserLocation
 from .models import Message
 import json
 
-# 每一個 WebSocket 連線 → 後端就會建立一個獨立的 ChatConsumer 實體
-
 class ChatConsumer(AsyncWebsocketConsumer):
 
     # 建立連線
