@@ -8,7 +8,7 @@ OSRM_DIR="osm_data/osrm_files"
 OSRM_DATA="${OSRM_DIR}/taiwan.osrm.properties"
 ENV_FILE=".env"
 ENV_SAMPLE=".env.sample"
-IMPORT_DONE=".import_done"  # 標記檔案，代表 tile-server 已經 import 過
+IMPORT_DONE=".import_done"  # 標記檔案，如果已存在，代表 tile-server 已經 import 過
 
 echo "🚦 啟動導航系統建置腳本..."
 
@@ -59,4 +59,4 @@ fi
 
 # ============ 啟動其他服務 ============
 echo "🧱 啟動其他 docker-compose 服務..."
-docker compose up -d --build --scale django=3
+docker compose up -d --build
