@@ -82,7 +82,7 @@ Nginx 在系統中扮演角色：
   - 將 `/api/` 請求轉發至 Django REST API。
   - 將 `/ws/` 協議升級為 WebSocket，轉發至 Django Channels。
 -  **負載均衡器**：
-  - 支援多個 Django 實例，透過 `docker compose --scale django=3` 實現後端分流。
+  - 支援多個 Django 實例，與docker compose yaml檔案配合。
 
 ##  系統畫面
 
