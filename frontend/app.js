@@ -1,7 +1,7 @@
 console.log("✅ app.js 載入成功");
 const map = L.map('map').setView([25.0330, 121.5654], 13);
 
-L.tileLayer('http://localhost:8080/tile/{z}/{x}/{y}.png', {
+L.tileLayer('http://34.57.158.129/tile/tile/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap',
   maxZoom: 19,
 }).addTo(map);
@@ -79,7 +79,7 @@ function confirmUserLocation() {
     map.getContainer().style.cursor = '';
 
     // 呼叫後端 API 儲存
-    fetch("http://localhost/api/users/", {
+    fetch("http://34.57.158.129/api/users/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -138,7 +138,7 @@ function fetchNearbyUsers() {
     return;
   }
 
-  fetch(`http://localhost/api/users/nearby/?name=${encodeURIComponent(username)}&radius=${radius}`)
+  fetch(`http://34.57.158.129/api/users/nearby/?name=${encodeURIComponent(username)}&radius=${radius}`)
     .then(res => res.json())
     .then(data => {
       const listEl = document.getElementById("nearby-users-list");
@@ -204,7 +204,7 @@ function openChat(targetName) {
   document.getElementById("chat-messages").innerHTML = "";  // 清空歷史訊息
 
   // 建立 WebSocket 連線 
-  const wsUrl = `ws://localhost/ws/chat/${yourName}/${targetName}/`;
+  const wsUrl = `ws://34.57.158.129/ws/chat/${yourName}/${targetName}/`;
   socket = new WebSocket(wsUrl);
 
   // 當有訊息從後端收到時觸發
@@ -302,7 +302,7 @@ function geocodeAddress(query) {
 
 // 呼叫 OSRM API 查詢路線資訊，畫在地圖上並顯示距離與時間
 function getRoute(start, end) {
-  const url = `http://localhost:5000/route/v1/driving/${start[1]},${start[0]};${end[1]},${end[0]}?overview=full&geometries=geojson`;
+  const url = `http://34.57.158.129/osrm/route/v1/driving/${start[1]},${start[0]};${end[1]},${end[0]}?overview=full&geometries=geojson`;
 
   fetch(url)
     .then(res => res.json())
