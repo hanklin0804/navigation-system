@@ -59,8 +59,8 @@ docker compose exec django-1 python manage.py migrate
 ```
 
 ##  開啟方式 
-1. VS Code Live Server
-2. 右鍵點選 frontend/index.html → 開啟 Live Server
+1. frontend/app.js 中的API的IP地址改成你的IP地址
+2. 網頁開啟你的IP地址
 3. 系統將顯示台灣地圖，支援定位、搜尋、聊天與導航功能
 
 ##  資料來源及處理
