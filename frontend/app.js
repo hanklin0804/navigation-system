@@ -204,7 +204,7 @@ function openChat(targetName) {
   document.getElementById("chat-messages").innerHTML = "";  // 清空歷史訊息
 
   // 建立 WebSocket 連線 
-  const wsUrl = `ws://34.57.158.129/ws/chat/${yourName}/${targetName}/`;
+  const wsUrl = `wss://34.57.158.129/ws/chat/${yourName}/${targetName}/`;
   socket = new WebSocket(wsUrl);
 
   // 當有訊息從後端收到時觸發
