@@ -120,3 +120,6 @@ docker compose exec django-1 python manage.py migrate
 </div>
 
 以上三張圖展示對同一 API 發出三次請求，經由 Nginx 負載均衡器，分別由不同 Django container 回應處理。
+
+![API文件](docs/images/swagger&redoc.png)  
+Swagger 與 ReDoc 文件介面。

@@ -1,23 +1,25 @@
-# # geouser/serializers.py
-# from rest_framework import serializers
-# from django.contrib.gis.geos import Point
-# from .models import UserLocation
+from rest_framework import serializers
+from .models import UserLocation
 
-# class UserLocationSerializer(serializers.ModelSerializer):
-#     lat = serializers.FloatField(write_only=True)
-#     lng = serializers.FloatField(write_only=True)
+# 回傳並轉換 model 資料給前端
+class UserLocationSerializer(serializers.ModelSerializer):
+    # 從 Model: UserLocation的 PointField 拆出經緯度）
+    lat = serializers.SerializerMethodField()
+    lng = serializers.SerializerMethodField()
 
-#     class Meta:
-#         model = UserLocation
-#         fields = ['name', 'lat', 'lng']
+    class Meta:
+        model = UserLocation # 對應的模型
+        fields = ['name', 'lat', 'lng', 'created_at'] # 要輸出的欄位
 
-#     def create(self, validated_data):
-#         lat = validated_data.pop('lat')
-#         lng = validated_data.pop('lng')
-#         name = validated_data['name']
-#         point = Point(lng, lat)  # 經緯度順序：X=lng, Y=lat
-#         instance, _ = UserLocation.objects.update_or_create(
-#             name=name,
-#             defaults={'location': point}
-#         )
-#         return instance
+    # get_<欄位名稱>，SerializerMethodField 自動呼叫的約定命名。
+    def get_lat(self, obj):
+        return obj.location.y
+
+    def get_lng(self, obj):
+        return obj.location.x
+
+# 驗證前端輸入的資料格式
+class UserLocationCreateSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=100)
+    lat = serializers.FloatField()
+    lng = serializers.FloatField()
