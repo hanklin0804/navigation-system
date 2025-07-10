@@ -11,3 +11,7 @@ osm_data/taiwan.pbf
 # 忽略自簽憑證檔案（保留 openssl.cnf）
 certbot/conf/selfsigned/privkey.pem
 certbot/conf/selfsigned/fullchain.pem
+
+
+__pycache__/
+*.py[cod]
