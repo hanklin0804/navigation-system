@@ -92,6 +92,10 @@ docker compose exec django-1 python manage.py migrate
 | `certbot/conf/selfsigned/privkey.pem`   | 私鑰 |
 | `certbot/conf/selfsigned/openssl.cnf`   | OpenSSL 設定檔，含 subjectAltName（支援 IP） |
 
+## 🎥 Demo Video
+[![Demo Video](docs/images/demo-thumbnail.png)](https://www.youtube.com/watch?v=_wN4NqdcgT8) 
+點擊上圖可觀看系統實際操作畫面。
+
 ##  系統畫面
 
 ![系統首頁](docs/images/map-home.png)  
