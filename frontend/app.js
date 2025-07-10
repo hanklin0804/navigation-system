@@ -1,7 +1,7 @@
 console.log("✅ app.js 載入成功");
 const map = L.map('map').setView([25.0330, 121.5654], 13);
 
-L.tileLayer('http://34.57.158.129/tile/tile/{z}/{x}/{y}.png', {
+L.tileLayer('https://34.57.158.129/tile/tile/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap',
   maxZoom: 19,
 }).addTo(map);
@@ -79,7 +79,7 @@ function confirmUserLocation() {
     map.getContainer().style.cursor = '';
 
     // 呼叫後端 API 儲存
-    fetch("http://34.57.158.129/api/users/", {
+    fetch("https://34.57.158.129/api/users/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -138,7 +138,7 @@ function fetchNearbyUsers() {
     return;
   }
 
-  fetch(`http://34.57.158.129/api/users/nearby/?name=${encodeURIComponent(username)}&radius=${radius}`)
+  fetch(`https://34.57.158.129/api/users/nearby/?name=${encodeURIComponent(username)}&radius=${radius}`)
     .then(res => res.json())
     .then(data => {
       const listEl = document.getElementById("nearby-users-list");
@@ -302,7 +302,7 @@ function geocodeAddress(query) {
 
 // 呼叫 OSRM API 查詢路線資訊，畫在地圖上並顯示距離與時間
 function getRoute(start, end) {
-  const url = `http://34.57.158.129/osrm/route/v1/driving/${start[1]},${start[0]};${end[1]},${end[0]}?overview=full&geometries=geojson`;
+  const url = `https://34.57.158.129/osrm/route/v1/driving/${start[1]},${start[0]};${end[1]},${end[0]}?overview=full&geometries=geojson`;
 
   fetch(url)
     .then(res => res.json())

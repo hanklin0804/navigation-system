@@ -9,6 +9,11 @@ OSRM_DATA="${OSRM_DIR}/taiwan.osrm.properties"
 ENV_FILE=".env"
 ENV_SAMPLE=".env.sample"
 IMPORT_DONE=".import_done"  # 標記檔案，如果已存在，代表 tile-server 已經 import 過
+SSL_DIR="certbot/conf/selfsigned"
+SSL_CERT="${SSL_DIR}/fullchain.pem"
+SSL_KEY="${SSL_DIR}/privkey.pem"
+OPENSSL_CNF="${SSL_DIR}/openssl.cnf"
+
 
 echo "🚦 啟動導航系統建置腳本..."
 
@@ -55,6 +60,45 @@ if [ ! -f "$IMPORT_DONE" ]; then
   # 標記已完成 import
   echo "✅" > "$IMPORT_DONE"
 fi
+
+
+# ============ 產生自簽名憑證 (若尚未存在) ============
+if [ ! -f "$SSL_CERT" ] || [ ! -f "$SSL_KEY" ]; then
+  echo "🔐 建立自簽名憑證..."
+
+  mkdir -p "$SSL_DIR"
+
+  # 建立 openssl.cnf（若不存在）
+  if [ ! -f "$OPENSSL_CNF" ]; then
+    echo "📄 建立 openssl.cnf 設定檔..."
+    cat <<EOF > "$OPENSSL_CNF"
+[req]
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+x509_extensions = v3_req
+prompt = no
+
+[req_distinguished_name]
+CN = 34.57.158.129
+
+[v3_req]
+subjectAltName = @alt_names
+
+[alt_names]
+IP.1 = 34.57.158.129
+EOF
+  fi
+
+  # 執行 openssl 產生憑證
+  openssl req -x509 -nodes -days 365 \
+    -newkey rsa:2048 \
+    -keyout "$SSL_KEY" \
+    -out "$SSL_CERT" \
+    -config "$OPENSSL_CNF"
+
+  echo "✅ 自簽名憑證產生完成"
+fi
+
 
 
 # ============ 啟動其他服務 ============

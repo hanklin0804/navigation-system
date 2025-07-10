@@ -63,6 +63,9 @@ docker compose exec django-1 python manage.py migrate
 2. 網頁開啟你的IP地址
 3. 系統將顯示台灣地圖，支援定位、搜尋、聊天與導航功能
 
+
+
+##  開發補充
 ##  資料來源及處理
 
 - 用 **台灣地圖資料**：由 [Geofabrik](https://download.geofabrik.de/) 取得的 `taiwan-latest.osm.pbf` 檔案。
@@ -71,11 +74,7 @@ docker compose exec django-1 python manage.py migrate
   - `osrm-partition`
   - `osrm-customize`
 
----
-
-##  開發補充
-
-Nginx 在系統中扮演角色：
+### Nginx 在系統中扮演角色：
 
 -  **靜態前端資源伺服器**：提供 `index.html`、`app.js`、`style.css` 等前端檔案。
 -  **反向代理伺服器**：
@@ -83,6 +82,15 @@ Nginx 在系統中扮演角色：
   - 將 `/ws/` 協議升級為 WebSocket，轉發至 Django Channels。
 -  **負載均衡器**：
   - 支援多個 Django 實例，與docker compose yaml檔案配合。
+
+### 🔐 自簽名憑證（開發用 HTTPS）
+`setup.sh` 中已整合自簽名憑證自動產生流程，支援IP-base 的 HTTPS 開發需求。
+
+| 路徑 | 說明 |
+|------|------|
+| `certbot/conf/selfsigned/fullchain.pem` | 憑證 |
+| `certbot/conf/selfsigned/privkey.pem`   | 私鑰 |
+| `certbot/conf/selfsigned/openssl.cnf`   | OpenSSL 設定檔，含 subjectAltName（支援 IP） |
 
 ##  系統畫面
 
