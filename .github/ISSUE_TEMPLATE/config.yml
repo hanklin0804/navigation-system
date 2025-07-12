@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 討論區 (Discussions)
+    url: https://github.com/hanklin0804/navigation-system/discussions
+    about: 一般問題討論、功能建議討論、開發交流
+  - name: 📖 文檔
+    url: https://github.com/hanklin0804/navigation-system/blob/main/README.md
+    about: 查看專案文檔和安裝指南
+  - name: 🔧 故障排除
+    url: https://github.com/hanklin0804/navigation-system/blob/main/docs/installation.md#常見問題
+    about: 常見問題和解決方案
