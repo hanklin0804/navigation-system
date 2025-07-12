@@ -1,4 +1,10 @@
 console.log("✅ app.js 載入成功");
+
+// === 認證相關變數 ===
+let authToken = localStorage.getItem('authToken');
+let currentUser = null;
+
+// === 地圖初始化 ===
 const map = L.map('map').setView([25.0330, 121.5654], 13);
 
 L.tileLayer('https://34.57.158.129/tile/tile/{z}/{x}/{y}.png', {
@@ -16,6 +22,170 @@ let pickingUserLocation = false;
 let socket = null;
 let currentChatUser = null;
 let currentUserName = null;
+
+// === 認證檢查 ===
+document.addEventListener('DOMContentLoaded', function() {
+  checkAuthStatus();
+});
+
+function checkAuthStatus() {
+  if (authToken) {
+    // 驗證 token 是否有效
+    fetch('https://34.57.158.129/api/auth/user/', {
+      headers: {
+        'Authorization': `Token ${authToken}`
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Token invalid');
+      }
+    })
+    .then(user => {
+      currentUser = user;
+      showMainInterface();
+    })
+    .catch(() => {
+      // Token 無效，清除並顯示登入界面
+      localStorage.removeItem('authToken');
+      authToken = null;
+      showAuthInterface();
+    });
+  } else {
+    showAuthInterface();
+  }
+}
+
+function showAuthInterface() {
+  document.getElementById('auth-container').style.display = 'block';
+  document.getElementById('map').style.display = 'none';
+  document.getElementById('route-info').style.display = 'none';
+}
+
+function showMainInterface() {
+  document.getElementById('auth-container').style.display = 'none';
+  document.getElementById('map').style.display = 'block';
+  document.getElementById('route-info').style.display = 'block';
+  document.getElementById('user-info').style.display = 'block';
+  document.getElementById('current-username').textContent = currentUser.username;
+}
+
+// === 認證相關函數 ===
+function showLoginForm() {
+  document.getElementById('login-form').style.display = 'block';
+  document.getElementById('register-form').style.display = 'none';
+}
+
+function showRegisterForm() {
+  document.getElementById('login-form').style.display = 'none';
+  document.getElementById('register-form').style.display = 'block';
+}
+
+function handleLogin() {
+  const username = document.getElementById('login-username').value;
+  const password = document.getElementById('login-password').value;
+
+  if (!username || !password) {
+    alert('請輸入使用者名稱和密碼');
+    return;
+  }
+
+  fetch('https://34.57.158.129/api/auth/login/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ username, password })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.token) {
+      authToken = data.token;
+      currentUser = data.user;
+      localStorage.setItem('authToken', authToken);
+      showMainInterface();
+      alert(data.message || '登入成功');
+    } else {
+      alert('登入失敗：' + JSON.stringify(data));
+    }
+  })
+  .catch(error => {
+    console.error('登入錯誤:', error);
+    alert('登入失敗，請稍後再試');
+  });
+}
+
+function handleRegister() {
+  const username = document.getElementById('register-username').value;
+  const email = document.getElementById('register-email').value;
+  const password = document.getElementById('register-password').value;
+  const passwordConfirm = document.getElementById('register-password-confirm').value;
+
+  if (!username || !email || !password || !passwordConfirm) {
+    alert('請填寫所有欄位');
+    return;
+  }
+
+  if (password !== passwordConfirm) {
+    alert('密碼確認不一致');
+    return;
+  }
+
+  fetch('https://34.57.158.129/api/auth/register/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      username,
+      email,
+      password,
+      password_confirm: passwordConfirm
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.token) {
+      authToken = data.token;
+      currentUser = data.user;
+      localStorage.setItem('authToken', authToken);
+      showMainInterface();
+      alert(data.message || '註冊成功');
+    } else {
+      alert('註冊失敗：' + JSON.stringify(data));
+    }
+  })
+  .catch(error => {
+    console.error('註冊錯誤:', error);
+    alert('註冊失敗，請稍後再試');
+  });
+}
+
+function handleLogout() {
+  fetch('https://34.57.158.129/api/auth/logout/', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Token ${authToken}`
+    }
+  })
+  .then(() => {
+    localStorage.removeItem('authToken');
+    authToken = null;
+    currentUser = null;
+    showAuthInterface();
+    alert('已登出');
+  })
+  .catch(error => {
+    console.error('登出錯誤:', error);
+    // 即使登出 API 失敗也清除本地資料
+    localStorage.removeItem('authToken');
+    authToken = null;
+    currentUser = null;
+    showAuthInterface();
+  });
+}
 
 // === 使用者選擇自己位置 ===
 // 當使用者點擊輸入框時，啟用地圖點選模式
@@ -45,13 +215,12 @@ map.on('click', (e) => {
   }
 });
 
-// === 使用者填寫「名稱」與「位置」後觸發的函式 ===
+// === 使用者確認位置後觸發的函式 ===
 function confirmUserLocation() {
-  const username = document.getElementById("username-input").value;
   const loc = document.getElementById("user-location-input").value;
 
-  if (!username || !loc) {
-    alert("請輸入使用者名稱與位置");
+  if (!loc) {
+    alert("請輸入位置");
     return;
   }
   // 嘗試把 loc 分成 [緯度, 經度] 並轉為數字
@@ -68,7 +237,7 @@ function confirmUserLocation() {
     // 在地圖上加上一顆新的 marker，並顯示使用者名稱
     userLocationMarker = L.marker([lat, lng])
       .addTo(map)
-      .bindPopup(`使用者 ${username}`)
+      .bindPopup(`使用者 ${currentUser.username}`)
       .openPopup();
 
     // 把地圖視角移動到該點，並放大
@@ -78,14 +247,14 @@ function confirmUserLocation() {
     pickingUserLocation = false;
     map.getContainer().style.cursor = '';
 
-    // 呼叫後端 API 儲存
+    // 呼叫後端 API 儲存（使用認證）
     fetch("https://34.57.158.129/api/users/", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": `Token ${authToken}`
       },
       body: JSON.stringify({
-        name: username,
         lat: lat,
         lng: lng
       })
@@ -94,8 +263,11 @@ function confirmUserLocation() {
       if (!res.ok) throw new Error("伺服器儲存失敗");
       return res.json();
     })
-    .then(data => {
-      console.log("✅ 使用者位置已儲存到後端");
+    .then(result => {
+      console.log("✅ 使用者位置已儲存到後端", result);
+      if (result.message) {
+        alert(result.message);
+      }
     })
     .catch(err => {
       console.error("❌ 儲存失敗", err);
@@ -123,22 +295,18 @@ function confirmUserLocation() {
 
 // === 查詢並顯示附近使用者 ===
 function fetchNearbyUsers() {
-  const username = document.getElementById("username-input").value;
   const radius = parseFloat(document.getElementById("radius-input").value || "2"); // 若無填，預設半徑為 2 公里
-  const loc = document.getElementById("user-location-input").value;
 
-  if (!username || !loc || isNaN(radius)) {
-    alert("請確認已輸入使用者名稱、位置與半徑");
+  if (isNaN(radius)) {
+    alert("請確認已輸入正確的半徑");
     return;
   }
 
-  const tryCoords = loc.split(",").map(s => parseFloat(s.trim()));
-  if (tryCoords.length !== 2 || tryCoords.some(isNaN)) {
-    alert("請輸入正確的座標格式");
-    return;
-  }
-
-  fetch(`https://34.57.158.129/api/users/nearby/?name=${encodeURIComponent(username)}&radius=${radius}`)
+  fetch(`https://34.57.158.129/api/users/nearby/?radius=${radius}`, {
+    headers: {
+      "Authorization": `Token ${authToken}`
+    }
+  })
     .then(res => res.json())
     .then(data => {
       const listEl = document.getElementById("nearby-users-list");
@@ -153,17 +321,17 @@ function fetchNearbyUsers() {
       data.nearby.forEach(u => {
         // 在 HTML 清單中新增使用者資訊
         const li = document.createElement("li");
-        li.textContent = `${u.name} (${u.lat.toFixed(5)}, ${u.lng.toFixed(5)})`;
+        li.textContent = `${u.username} (${u.lat.toFixed(5)}, ${u.lng.toFixed(5)})`;
         listEl.appendChild(li);
 
         // 在地圖上新增一顆 marker 並綁定 popup
         const userMarker = L.marker([u.lat, u.lng])
           .addTo(map)
-          .bindPopup(`<strong>${u.name}</strong>`)
+          .bindPopup(`<strong>${u.username}</strong>`)
           .openPopup();
 
         // 顯示常駐名稱 label（上方小標籤）
-        userMarker.bindTooltip(u.name, {
+        userMarker.bindTooltip(u.username, {
           permanent: true,
           direction: 'top',
           offset: [0, -10],
@@ -171,7 +339,7 @@ function fetchNearbyUsers() {
         }).openTooltip();
 
         // 點擊 marker 開啟聊天視窗
-        userMarker.on('click', () => openChat(u.name));
+        userMarker.on('click', () => openChat(u.username));
 
         // 過 20 秒自動移除 marker，避免地圖混亂（視情況可拔）
         setTimeout(() => map.removeLayer(userMarker), 20_000); 
@@ -186,16 +354,14 @@ function fetchNearbyUsers() {
 
 // === 聊天室功能 ===
 function openChat(targetName) {
-  // 取得使用者自己的名稱
-  const yourName = document.getElementById("username-input").value.trim();
-  
-  if (!yourName || yourName === targetName) {
-    alert("請輸入有效的使用者名稱，且不能和自己聊天");
+  // 使用認證用戶的名稱
+  if (!currentUser || currentUser.username === targetName) {
+    alert("無法和自己聊天");
     return;
   }
 
   // 記錄目前的使用者與聊天對象（供其他函式使用）
-  currentUserName = yourName;
+  currentUserName = currentUser.username;
   currentChatUser = targetName;
 
   // UI 相關操作 
@@ -204,7 +370,7 @@ function openChat(targetName) {
   document.getElementById("chat-messages").innerHTML = "";  // 清空歷史訊息
 
   // 建立 WebSocket 連線 
-  const wsUrl = `wss://34.57.158.129/ws/chat/${yourName}/${targetName}/`;
+  const wsUrl = `wss://34.57.158.129/ws/chat/${currentUserName}/${targetName}/`;
   socket = new WebSocket(wsUrl);
 
   // 當有訊息從後端收到時觸發

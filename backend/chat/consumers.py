@@ -1,6 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
-from geouser.models import UserLocation
+from django.contrib.auth.models import User
 from .models import Message
 import json
 
@@ -45,7 +45,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.room_name,
             {
                 'type': 'chat_message', # 呼叫 chat_message() 方法
-                'sender_name': sender.name,
+                'sender_name': sender.username,
                 'message': msg,
             }
         )
@@ -59,8 +59,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     # 非同步從資料庫查詢使用者
     @database_sync_to_async
-    def get_user(self, name):
-        return UserLocation.objects.get(name=name)
+    def get_user(self, username):
+        return User.objects.get(username=username)
 
     # 非同步地儲存一筆訊息
     @database_sync_to_async

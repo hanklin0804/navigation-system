@@ -1,17 +1,118 @@
-.env
-scripts/
-backend/venv/
-venv/
+# 台灣導航系統 - Git 忽略文件
 
-# 忽略 osrm_files 裡所有檔案，但保留 .gitkeep
+# === Python 相關 ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# === Django 相關 ===
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# === 環境變數和設定 ===
+.env
+.env.local
+.env.production
+.venv
+venv/
+ENV/
+env/
+backend/venv/
+scripts/
+
+# === 資料庫備份檔案 ===
+backup_*.sql
+*.dump
+*.backup
+
+# === OSM 和地圖資料 ===
 osm_data/osrm_files/*
 !osm_data/osrm_files/.gitkeep
 osm_data/taiwan.pbf
+osm_data/taiwan.osm.pbf/
+*.osm
+*.osm.bz2
+*.osm.gz
+*.osm.pbf
 
-# 忽略自簽憑證檔案（保留 openssl.cnf）
+# === SSL 憑證和金鑰 ===
 certbot/conf/selfsigned/privkey.pem
 certbot/conf/selfsigned/fullchain.pem
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
 
+# === Docker 相關 ===
+.docker/
+docker-compose.override.yml
 
-__pycache__/
-*.py[cod]
+# === 編輯器和 IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# === 作業系統生成檔案 ===
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# === Node.js 相關（如果將來需要） ===
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# === 測試和覆蓋率報告 ===
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# === Jupyter Notebook ===
+.ipynb_checkpoints
+
+# === 臨時和快取檔案 ===
+*.tmp
+*.temp
+.cache/
+.sass-cache/
+
+# === 個人配置檔案 ===
+.personal_settings
+local_config.py

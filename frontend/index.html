@@ -7,11 +7,42 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- 認證界面 -->
+  <div id="auth-container" style="display:none;">
+    <h2>台灣導航系統</h2>
+    
+    <!-- 登入表單 -->
+    <div id="login-form">
+      <h3>登入</h3>
+      <label>使用者名稱：<input type="text" id="login-username" placeholder="輸入使用者名稱" /></label><br><br>
+      <label>密碼：<input type="password" id="login-password" placeholder="輸入密碼" /></label><br><br>
+      <button onclick="handleLogin()">登入</button>
+      <button onclick="showRegisterForm()">還沒有帳號？註冊</button>
+    </div>
+
+    <!-- 註冊表單 -->
+    <div id="register-form" style="display:none;">
+      <h3>註冊</h3>
+      <label>使用者名稱：<input type="text" id="register-username" placeholder="輸入使用者名稱" /></label><br><br>
+      <label>電子郵件：<input type="email" id="register-email" placeholder="輸入電子郵件" /></label><br><br>
+      <label>密碼：<input type="password" id="register-password" placeholder="輸入密碼" /></label><br><br>
+      <label>確認密碼：<input type="password" id="register-password-confirm" placeholder="再次輸入密碼" /></label><br><br>
+      <button onclick="handleRegister()">註冊</button>
+      <button onclick="showLoginForm()">已有帳號？登入</button>
+    </div>
+  </div>
+
   <div id="map"></div>
 
   <div id="route-info">
-    <h3>輸入資料</h3>
-    <label>使用者名稱：<input type="text" id="username-input" placeholder="例如：小明" /></label><br><br>
+    <!-- 使用者資訊 -->
+    <div id="user-info" style="display:none;">
+      <h3>歡迎，<span id="current-username"></span>！</h3>
+      <button onclick="handleLogout()">登出</button>
+      <hr>
+    </div>
+
+    <h3>設定位置</h3>
     <label>目前位置：<input type="text" id="user-location-input" placeholder="可輸入或點擊地圖選點" /></label><br><br>
     <button onclick="confirmUserLocation()">確認位置</button>
     <hr>
