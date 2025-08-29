@@ -6,9 +6,13 @@ from .utils import TestCoordinates, create_test_user
 class BaseTestCase(TestCase):
     """基礎測試類別，提供常用測試資料"""
     
-    @classmethod
+    @classmethod # 只會建一次測試資料，整個類別共用
     def setUpTestData(cls):
-        """建立所有測試共用的資料"""
+        """
+        建立所有測試共用的資料。
+        setUpTestData 是 Django 測試框架提供的 class method hook
+        後面繼承 BaseTestCase 的測試都能直接用 self.alice、self.bob、self.charlie
+        """
         coords = TestCoordinates
         cls.alice = create_test_user("Alice", *coords.TAIPEI_MAIN_STATION)
         cls.bob = create_test_user("Bob", *coords.TAIPEI_101)
