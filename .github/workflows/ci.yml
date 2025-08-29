@@ -45,7 +45,12 @@ jobs:
       with:
         python-version: '3.11'
 
-    - name: Install dependencies
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gdal-bin libgdal-dev
+
+    - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r backend/requirements.txt
@@ -68,5 +73,15 @@ jobs:
         docker build -t navigation-backend ./backend
         
     - name: Test Docker Compose config
+      env:
+        POSTGRES_USER: test_user
+        POSTGRES_PASSWORD: test_pass
+        POSTGRES_DB: test_db
+        OSRM_MAP: taiwan
       run: |
+        # Create .env file for docker-compose config validation
+        echo "POSTGRES_USER=test_user" > .env
+        echo "POSTGRES_PASSWORD=test_pass" >> .env
+        echo "POSTGRES_DB=test_db" >> .env
+        echo "OSRM_MAP=taiwan" >> .env
         docker compose config
