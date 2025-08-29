@@ -47,8 +47,8 @@
 git clone git@github.com:hanklin0804/navigation-system.git
 cd navigation-system/
 
-chmod +x setup.sh
-./setup.sh
+chmod +x ./scripts/setup.sh
+./scripts/setup.sh
 ```
 
 ---
@@ -63,7 +63,24 @@ docker compose exec django-1 python manage.py migrate
 2. 網頁開啟你的IP地址
 3. 系統將顯示台灣地圖，支援定位、搜尋、聊天與導航功能
 
+##  測試
 
+### 快速驗證
+```bash
+# 執行核心測試
+docker exec django-1 python manage.py test geouser chat
+
+# 執行測試腳本
+./scripts/run_tests.sh
+```
+
+### 覆蓋率檢查
+```bash
+# 生成覆蓋率報告
+./scripts/run_coverage.sh
+```
+- 查看 HTML 報告
+  - 開啟方式: 在瀏覽器中打開 file:///path/to/navigation-system/htmlcov/index.html
 
 ##  開發補充
 ###  資料來源及處理
